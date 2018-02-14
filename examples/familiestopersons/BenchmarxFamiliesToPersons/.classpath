@@ -21,5 +21,8 @@
 	<classpathentry kind="lib" path="lib/mediniQVT/mediniQVT.jar"/>
 	<classpathentry kind="lib" path="lib/mediniQVT/qvtemf.jar"/>
 	<classpathentry kind="lib" path="lib/FunnyQT/ttc17-families2persons-bx-1.0.0-standalone.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Benchmarx"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RTLPlus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/use"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
