@@ -2,8 +2,11 @@ package org.benchmarx.examples.familiestopersons.implementations.rtl;
 
 import java.io.PrintWriter;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.emf.ecore.EObject;
 import org.tzi.use.api.UseSystemApi;
 import org.tzi.use.main.Session;
 import org.tzi.use.uml.mm.MAssociation;
@@ -83,9 +86,10 @@ public class ModelConverter {
 		perRegPer = perRegAssEnds.get(1);
 	}
 
-	public FamilyRegister getFamilyRegister() {
+	public FamilyRegister getFamilyRegister(Map<EObject, String> eObjToUse) {
 		FamilyRegister famReg = famFactory.createFamilyRegister();
 		MObject famRegObj = state.objectByName("famReg");
+		eObjToUse.put(famReg, "famReg");
 		if (famRegObj == null) {
 			logWriter.println("Family register object 'famReg' not found in USE");
 			return famReg;
@@ -96,11 +100,13 @@ public class ModelConverter {
 			StringValue famName = (StringValue) famState.attributeValue("name");
 			String familyName = famName.value();
 			Family family = famFactory.createFamily();
+			eObjToUse.put(family, familyObj.name());
 			family.setName(familyName);
 			famReg.getFamilies().add(family);
 			List<MObject> fats = familyObj.getNavigableObjects(state, fatherFam, fatherFat, null);
 			for (MObject fatherObj : fats) {
 				FamilyMember father = famFactory.createFamilyMember();
+				eObjToUse.put(father, fatherObj.name());
 				family.setFather(father);
 				Value fatherNameValue = fatherObj.state(state).attributeValue("name");
 				if (fatherNameValue.isDefined()) {
@@ -111,6 +117,7 @@ public class ModelConverter {
 			List<MObject> mots = familyObj.getNavigableObjects(state, motherFam, motherMot, null);
 			for (MObject motherObj : mots) {
 				FamilyMember mother = famFactory.createFamilyMember();
+				eObjToUse.put(mother, motherObj.toString());
 				family.setMother(mother);
 				Value motherNameValue = motherObj.state(state).attributeValue("name");
 				if (motherNameValue.isDefined()) {
@@ -121,6 +128,7 @@ public class ModelConverter {
 			List<MObject> sons = familyObj.getNavigableObjects(state, sonFam, sonSons, null);
 			for (MObject sonObj : sons) {
 				FamilyMember son = famFactory.createFamilyMember();
+				eObjToUse.put(son, sonObj.name());
 				family.getSons().add(son);
 				Value sonNameValue = sonObj.state(state).attributeValue("name");
 				if (sonNameValue.isDefined()) {
@@ -131,6 +139,7 @@ public class ModelConverter {
 			List<MObject> daughters = familyObj.getNavigableObjects(state, daughterFam, daughterDaus, null);
 			for (MObject daughterObj : daughters) {
 				FamilyMember daughter = famFactory.createFamilyMember();
+				eObjToUse.put(daughter, daughterObj.name());
 				family.getDaughters().add(daughter);
 				Value daughterNameValue = daughterObj.state(state).attributeValue("name");
 				if (daughterNameValue.isDefined()) {
@@ -142,8 +151,9 @@ public class ModelConverter {
 		return famReg;
 	}
 	
-	public PersonRegister getPersonRegister() {
+	public PersonRegister getPersonRegister(Map<EObject, String> eObjToUse) {
 		PersonRegister perReg = perFactory.createPersonRegister();
+		eObjToUse.put(perReg, "perReg");
 		MObject perRegObj = state.objectByName("perReg");
 		if (perRegObj == null) {
 			logWriter.println("Person register object 'perReg' not found in USE");
@@ -151,6 +161,7 @@ public class ModelConverter {
 		}
 		for (MObject personObj : perRegObj.getNavigableObjects(state, perRegPerReg, perRegPer, null)) {
 			Person person = (personObj.cls().name().equals("Male"))? perFactory.createMale() : perFactory.createFemale();
+			eObjToUse.put(person, personObj.name());
 			perReg.getPersons().add(person);
 			Value personNameValue = personObj.state(state).attributeValue("fullName");
 			if (personNameValue.isDefined()) {
@@ -161,7 +172,8 @@ public class ModelConverter {
 			if (personBirthdayValue.isDefined()) {
 				String personBirthday = ((StringValue) personBirthdayValue).value();
 				try {
-					person.setBirthday(ChangeListener.compatibleFormat.parse(personBirthday));
+					Date date = ChangeListener.compatibleFormat.parse(personBirthday);
+					person.setBirthday(date);
 				} catch (ParseException e) {
 					logWriter.println("Error parsing birthday from string: " + e.getMessage());
 					e.printStackTrace();

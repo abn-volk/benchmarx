@@ -45,9 +45,11 @@ public class ChangeListener extends EContentAdapter {
 		super.notifyChanged(noti);
 		if (noti.getEventType() == Notification.REMOVING_ADAPTER)
 			return;
+		System.out.println(Integer.toString(noti.getEventType()));
 		EObject affectedElement = (EObject) noti.getNotifier();
 		EStructuralFeature feature = (EStructuralFeature) noti.getFeature();
-		
+		System.out.println(affectedElement.toString());
+		System.out.println(feature.getName());
 		String affectedObj = eObjToUse.get(affectedElement);
 		if (affectedObj == null)
 			affectedObj = createObject(affectedElement);
@@ -62,51 +64,57 @@ public class ChangeListener extends EContentAdapter {
 				logWriter.println("No corresponding USE association name found for the reference named " + feature.getName());
 				return;
 			}
-			Object value = noti.getNewValue();
-			if (value instanceof EObject) {
-				String newObject = eObjToUse.get(value);
-				if (newObject == null)
-					newObject = createObject((EObject) value);
-				if (newObject == null) {
-					logWriter.println("Failed to create corresponding USE object for " + value.toString());
-					return;
-				}
-				switch (noti.getEventType()) {
-				case Notification.ADD:
-				case Notification.SET:
+			switch (noti.getEventType()) {
+			case Notification.ADD:
+			case Notification.SET:
+				Object newValue = noti.getNewValue();
+				if (newValue instanceof EObject) {
+					String newObject = eObjToUse.get(newValue);
+					if (newObject == null)
+						newObject = createObject((EObject) newValue);
+					if (newObject == null) {
+						logWriter.println("Failed to create corresponding USE object for " + newValue.toString());
+						return;
+					}
 					try {
 						api.createLink(assocName, affectedObj, newObject);
 					} catch (UseApiException e) {
 						logWriter.println("Error when creating link: " + e.getMessage());
 						e.printStackTrace();
 					}
-					break;
-				case Notification.REMOVE:
-				case Notification.UNSET:
+				}
+				break;
+			case Notification.REMOVE:
+			case Notification.UNSET:
+				Object oldValue = noti.getOldValue();
+				String oldObject = eObjToUse.get(oldValue);
+				if (oldObject != null) {
 					try {
-						api.deleteLink(assocName, new String[] {affectedObj, newObject});
+						System.out.println("removing link");
+						api.deleteLink(assocName, new String[] {affectedObj, oldObject});
 					} catch (UseApiException e) {
 						logWriter.println("Error when deleting link: " + e.getMessage());
 						e.printStackTrace();
 					}
-					break;
-				default:
-					logWriter.println("Event type not supported: " + Integer.toString(noti.getEventType()));
-					break;
 				}
+				break;
+			default:
+				logWriter.println("Event type not supported: " + Integer.toString(noti.getEventType()));
+				break;
 			}
-			else {
-				logWriter.println("New value is not an EObject!");
-				return;
-			}
+			
+			
 		}
 		// EAttribute
 		else {
 			// Is a single attribute. In the Fam2Per case, all attributes are of String/Date type
 			if (feature.getUpperBound() != 1)
 				return;
+//			System.out.println("Changed " + feature.getName());
 			Object value = noti.getNewValue();
 			String valueRepr = (value == null)? "Undefined" : format(value);
+//			System.out.println("Of: " + affectedObj);
+//			System.out.println("To: " + valueRepr);
 			try {
 				api.setAttributeValue(affectedObj, feature.getName(), valueRepr);
 			} catch (UseApiException e) {
@@ -114,15 +122,16 @@ public class ChangeListener extends EContentAdapter {
 				e.printStackTrace();
 			}
 		}
-		/*
-		logWriter.println("Affected element: " + affectedElement.toString());
-		logWriter.println("Feature: " + feature.getName());
-		logWriter.println("Type: " + Integer.toString(noti.getEventType()));
-		if (noti.getOldValue() != null)
-			logWriter.println("Old value: " + noti.getOldValue().toString());
-		if (noti.getNewValue() != null)
-			logWriter.println("New value: " + noti.getNewValue().toString());
-		*/
+		
+		
+//		logWriter.println("Affected element: " + affectedElement.toString());
+//		logWriter.println("Feature: " + feature.getName());
+//		logWriter.println("Type: " + Integer.toString(noti.getEventType()));
+//		if (noti.getOldValue() != null)
+//			logWriter.println("Old value: " + noti.getOldValue().toString());
+//		if (noti.getNewValue() != null)
+//			logWriter.println("New value: " + noti.getNewValue().toString());
+		
 	}
 	
 	private String createObject(EObject affectedElement) {

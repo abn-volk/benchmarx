@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -19,9 +18,9 @@ import org.tzi.use.api.UseSystemApi;
 import org.tzi.use.main.Session;
 import org.tzi.use.uml.sys.MSystemState;
 import org.uet.dse.rtlplus.RTLLoader;
-import org.uet.dse.rtlplus.matching.ForwardMatchManager;
-import org.uet.dse.rtlplus.matching.Match;
-import org.uet.dse.rtlplus.matching.MatchManager;
+import org.uet.dse.rtlplus.sync.SyncWorker;
+
+import com.google.common.eventbus.EventBus;
 
 import Families.FamiliesFactory;
 import Families.FamilyRegister;
@@ -40,6 +39,8 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	private Map<EObject, String> eObjToUse;
 	private ChangeListener listener;
 	private ModelConverter converter;
+	private SyncWorker syncWorker;
+	private EventBus eventBus;
 	
 	public RtlFamiliesToPersons() {
 		super(new FamiliesComparator(), new PersonsComparator());
@@ -63,6 +64,8 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		state = session.system().state();
 		api = UseSystemApi.create(session);
 		converter = new ModelConverter(session, state, logWriter, api);
+		syncWorker = new SyncWorker(null, logWriter, session);
+		eventBus = session.system().getEventBus();
 		try {
 			api.createObject("FamilyRegister", "famReg");
 			api.createObject("PersonRegister", "perReg");
@@ -77,41 +80,57 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 			listener = new ChangeListener(session, state, logWriter, api, eObjToUse);
 			listener.observe(famReg);
 			listener.observe(perReg);
+			
 		} catch (UseApiException e) {
 			e.printStackTrace();
 		}
+		eventBus.register(syncWorker);
 	}
 	
 	@Override
 	public void performIdleSourceEdit(Consumer<FamilyRegister> edit) {
+		eventBus.unregister(syncWorker);
 		edit.accept(getSourceModel());
+		eventBus.register(syncWorker);
+		logWriter.println("\n\n\nIdle source edit");
+		logWriter.println("================= Families =====================");
+		logWriter.println(new FamiliesComparator().familyToString(famReg));
+		logWriter.println("================= USE =====================");
+		logWriter.println(state.allObjects().toString());
 	}
 
 	@Override
 	public void performIdleTargetEdit(Consumer<PersonRegister> edit) {
+		eventBus.unregister(syncWorker);
 		edit.accept(getTargetModel());
+		eventBus.register(syncWorker);
+		logWriter.println("\n\n\nIdle target edit");
+		logWriter.println("================= Persons =====================");
+		logWriter.println(new PersonsComparator().personsToString(perReg));
+		logWriter.println("================= USE =====================");
+		logWriter.println(state.allObjects().toString());
 	}
 
 	@Override
 	public void performAndPropagateSourceEdit(Consumer<FamilyRegister> edit) {
-		performIdleSourceEdit(edit);
-		MatchManager manager = new ForwardMatchManager(state, false);
-		List<Match> matches;
-		do {
-			matches = manager.findMatches();
-			for (Match match : matches) {
-				if (match.run(state, logWriter)) 
-					continue;
-			}
-		}
-		while (matches.size() > 0);
+		edit.accept(getSourceModel());
+		logWriter.println("\n\n\nSource edit");
+		logWriter.println("================= Families =====================");
+		logWriter.println(new FamiliesComparator().familyToString(famReg));
+		logWriter.println("================= USE =====================");
+		logWriter.println(state.allObjects().toString());
 		// Invalidate person model
 		perReg = null;
 	}
 
 	@Override
 	public void performAndPropagateTargetEdit(Consumer<PersonRegister> edit) {
-		// TODO Auto-generated method stub
+		edit.accept(getTargetModel());
+		logWriter.println("\n\n\nTarget edit");
+		logWriter.println("================= Persons =====================");
+		logWriter.println(new PersonsComparator().personsToString(perReg));
+		logWriter.println("================= USE =====================");
+		logWriter.println(state.allObjects().toString());
 		// Invalidate family model
 		famReg = null;
 		
@@ -125,6 +144,13 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	
 	@Override
 	public void terminateSynchronisationDialogue() {
+		logWriter.println("\n\n\nFinished");
+		logWriter.println("================= Families =====================");
+		logWriter.println(new FamiliesComparator().familyToString(famReg));
+		logWriter.println("================= Persons =====================");
+		logWriter.println(new PersonsComparator().personsToString(perReg));
+		logWriter.println("================= USE =====================");
+		logWriter.println(state.allObjects().toString());
 		super.terminateSynchronisationDialogue();
 		logWriter.println("END\n\n");
 		logWriter.close();
@@ -137,15 +163,19 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 
 	@Override
 	public FamilyRegister getSourceModel() {
-		if (famReg == null)
-			famReg = converter.getFamilyRegister();
+		if (famReg == null) {
+			famReg = converter.getFamilyRegister(eObjToUse);
+			listener.observe(famReg);
+		}
 		return famReg;
 	}
 
 	@Override
 	public PersonRegister getTargetModel() {
-		if (perReg == null)
-			perReg = converter.getPersonRegister();
+		if (perReg == null) {
+			perReg = converter.getPersonRegister(eObjToUse);
+			listener.observe(perReg);
+		}
 		return perReg;
 	}
 
