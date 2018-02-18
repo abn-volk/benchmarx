@@ -71,7 +71,6 @@ public class IncrementalForward extends FamiliesToPersonsTestCase {
 		
 		util.assertPrecondition("Pre_IncrFwdFamily", "Pre_IncrFwdPerson");
 		//------------
-		System.out.println("Deleting!!!!!!!!!!!!");
 		tool.performAndPropagateSourceEdit(util
 				.execute(helperFamily::deleteFirstSonBart));
 		//------------

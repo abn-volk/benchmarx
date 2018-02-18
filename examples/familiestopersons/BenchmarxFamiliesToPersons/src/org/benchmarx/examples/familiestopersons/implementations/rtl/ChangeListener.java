@@ -45,11 +45,11 @@ public class ChangeListener extends EContentAdapter {
 		super.notifyChanged(noti);
 		if (noti.getEventType() == Notification.REMOVING_ADAPTER)
 			return;
-		System.out.println(Integer.toString(noti.getEventType()));
+		//System.out.println(Integer.toString(noti.getEventType()));
 		EObject affectedElement = (EObject) noti.getNotifier();
 		EStructuralFeature feature = (EStructuralFeature) noti.getFeature();
-		System.out.println(affectedElement.toString());
-		System.out.println(feature.getName());
+		//System.out.println(affectedElement.toString());
+		//System.out.println(feature.getName());
 		String affectedObj = eObjToUse.get(affectedElement);
 		if (affectedObj == null)
 			affectedObj = createObject(affectedElement);
@@ -90,7 +90,7 @@ public class ChangeListener extends EContentAdapter {
 				String oldObject = eObjToUse.get(oldValue);
 				if (oldObject != null) {
 					try {
-						System.out.println("removing link");
+						//System.out.println("removing link");
 						api.deleteLink(assocName, new String[] {affectedObj, oldObject});
 					} catch (UseApiException e) {
 						logWriter.println("Error when deleting link: " + e.getMessage());
@@ -112,11 +112,24 @@ public class ChangeListener extends EContentAdapter {
 				return;
 //			System.out.println("Changed " + feature.getName());
 			Object value = noti.getNewValue();
-			String valueRepr = (value == null)? "Undefined" : format(value);
 //			System.out.println("Of: " + affectedObj);
 //			System.out.println("To: " + valueRepr);
 			try {
-				api.setAttributeValue(affectedObj, feature.getName(), valueRepr);
+				if (affectedElement.eClass().getName().equals("Person") && feature.getName().equals("fullName")) {
+					if (value != null) {
+						String[] name = ((String) value).split(", ");
+						if (name.length != 2)
+							logWriter.println("Wrong full name format: " + value.toString());
+						else {
+							api.setAttributeValue(affectedObj, "familyName", name[0]);
+							api.setAttributeValue(affectedObj, "givenName", name[1]);
+						}
+					}
+				}
+				else {
+					String valueRepr = (value == null)? "Undefined" : format(value);
+					api.setAttributeValue(affectedObj, feature.getName(), valueRepr);
+				}
 			} catch (UseApiException e) {
 				logWriter.println("Error when setting attribute: " + e.getMessage());
 				e.printStackTrace();

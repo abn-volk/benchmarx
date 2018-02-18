@@ -51,8 +51,8 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		// Create new USE session
 		session = new Session();
 		File familiesUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Families.use");
-		File personsUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Persons.use");
-		String tggName = "/home/pnh/NCKH/use-5.0.0/Families2Persons/Families2Persons.tgg";
+		File personsUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Persons2.use");
+		String tggName = "/home/pnh/NCKH/use-5.0.0/Families2Persons/Families2Persons2.tgg";
 		File logFile = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/log.txt");
 		try {
 			logWriter = new PrintWriter(logFile);
@@ -70,8 +70,8 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 			api.createObject("FamilyRegister", "famReg");
 			api.createObject("PersonRegister", "perReg");
 			api.createObject("FR2PR", "fr2pr");
-			api.createLink("FamilyRegister_FR2PR", new String[] {"famReg", "fr2pr"});
-			api.createLink("PersonRegister_FR2PR", new String[] {"perReg", "fr2pr"});
+			api.createLink("FR2PR_FamilyRegister", new String[] {"famReg", "fr2pr"});
+			api.createLink("FR2PR_PersonRegister", new String[] {"perReg", "fr2pr"});
 			famReg = FamiliesFactory.eINSTANCE.createFamilyRegister();
 			perReg = PersonsFactory.eINSTANCE.createPersonRegister();
 			eObjToUse = new HashMap<>();

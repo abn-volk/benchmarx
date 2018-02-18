@@ -163,9 +163,11 @@ public class ModelConverter {
 			Person person = (personObj.cls().name().equals("Male"))? perFactory.createMale() : perFactory.createFemale();
 			eObjToUse.put(person, personObj.name());
 			perReg.getPersons().add(person);
-			Value personNameValue = personObj.state(state).attributeValue("fullName");
-			if (personNameValue.isDefined()) {
-				String personName = ((StringValue) personNameValue).value();
+			//System.out.println(personObj.state(state).attributeValueMap().toString());
+			Value personNameValue = personObj.state(state).attributeValue("givenName");
+			Value familyNameValue = personObj.state(state).attributeValue("familyName");
+			if (personNameValue.isDefined() && familyNameValue.isDefined()) {
+				String personName = ((StringValue) familyNameValue).value() + ", " + ((StringValue) personNameValue).value();
 				person.setName(personName);
 			}
 			Value personBirthdayValue = personObj.state(state).attributeValue("birthday");
