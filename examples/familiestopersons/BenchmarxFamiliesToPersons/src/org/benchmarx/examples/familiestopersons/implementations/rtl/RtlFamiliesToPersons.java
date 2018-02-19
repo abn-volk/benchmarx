@@ -3,6 +3,7 @@ package org.benchmarx.examples.familiestopersons.implementations.rtl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -17,7 +18,9 @@ import org.tzi.use.api.UseApiException;
 import org.tzi.use.api.UseSystemApi;
 import org.tzi.use.main.Session;
 import org.tzi.use.uml.sys.MSystemState;
+import org.uet.dse.rtlplus.Main;
 import org.uet.dse.rtlplus.RTLLoader;
+import org.uet.dse.rtlplus.matching.Match;
 import org.uet.dse.rtlplus.sync.SyncWorker;
 
 import com.google.common.eventbus.EventBus;
@@ -41,6 +44,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	private ModelConverter converter;
 	private SyncWorker syncWorker;
 	private EventBus eventBus;
+	private Configurator<Decisions> configurator;
 	
 	public RtlFamiliesToPersons() {
 		super(new FamiliesComparator(), new PersonsComparator());
@@ -89,6 +93,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	
 	@Override
 	public void performIdleSourceEdit(Consumer<FamilyRegister> edit) {
+		sortRules();
 		eventBus.unregister(syncWorker);
 		edit.accept(getSourceModel());
 		eventBus.register(syncWorker);
@@ -101,6 +106,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 
 	@Override
 	public void performIdleTargetEdit(Consumer<PersonRegister> edit) {
+		sortRules();
 		eventBus.unregister(syncWorker);
 		edit.accept(getTargetModel());
 		eventBus.register(syncWorker);
@@ -113,6 +119,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 
 	@Override
 	public void performAndPropagateSourceEdit(Consumer<FamilyRegister> edit) {
+		sortRules();
 		edit.accept(getSourceModel());
 		logWriter.println("\n\n\nSource edit");
 		logWriter.println("================= Families =====================");
@@ -125,6 +132,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 
 	@Override
 	public void performAndPropagateTargetEdit(Consumer<PersonRegister> edit) {
+		sortRules();
 		edit.accept(getTargetModel());
 		logWriter.println("\n\n\nTarget edit");
 		logWriter.println("================= Persons =====================");
@@ -138,8 +146,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 
 	@Override
 	public void setConfigurator(Configurator<Decisions> conf) {
-		// TODO Auto-generated method stub
-	
+		configurator = conf;
 	}
 	
 	@Override
@@ -183,5 +190,25 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	public void saveModels(String name) {
 		
 	}
-
+	
+	private void sortRules() {
+		boolean parent = configurator.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD);
+		boolean existing = configurator.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW);
+		Main.matchComparator = new Comparator<Match>() {
+			@Override
+			public int compare(Match arg0, Match arg1) {
+				boolean arg0Parent = arg0.getRule().getName().contains("Father") || arg0.getRule().getName().contains("Mother");
+				boolean arg1Parent = arg1.getRule().getName().contains("Father") || arg1.getRule().getName().contains("Mother");
+				boolean arg0New = arg0.getRule().getName().contains("NewFamily");
+				boolean arg1New = arg1.getRule().getName().contains("NewFamily");
+				int arg0Point = 0;
+				int arg1Point = 0;
+				if (parent == arg0Parent) arg0Point--;
+				if (existing == !arg0New) arg0Point--;
+				if (parent == arg1Parent) arg1Point--;
+				if (existing == !arg1New) arg1Point--;
+				return Integer.compare(arg0Point, arg1Point);
+			}
+		};
+	}
 }

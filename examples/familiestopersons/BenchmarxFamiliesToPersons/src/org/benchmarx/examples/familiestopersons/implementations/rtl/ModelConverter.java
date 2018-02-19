@@ -97,12 +97,14 @@ public class ModelConverter {
 		List<MObject> families = famRegObj.getNavigableObjects(state, famRegFamReg, famRegFam, null);
 		for (MObject familyObj : families) {
 			MObjectState famState = familyObj.state(state);
-			StringValue famName = (StringValue) famState.attributeValue("name");
-			String familyName = famName.value();
 			Family family = famFactory.createFamily();
 			eObjToUse.put(family, familyObj.name());
-			family.setName(familyName);
 			famReg.getFamilies().add(family);
+			Value famNameValue = famState.attributeValue("name");
+			if (famNameValue.isDefined()) {
+				String familyName = ((StringValue) famNameValue).value();
+				family.setName(familyName);
+			}
 			List<MObject> fats = familyObj.getNavigableObjects(state, fatherFam, fatherFat, null);
 			for (MObject fatherObj : fats) {
 				FamilyMember father = famFactory.createFamilyMember();

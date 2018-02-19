@@ -113,9 +113,9 @@ public class ChangeListener extends EContentAdapter {
 //			System.out.println("Changed " + feature.getName());
 			Object value = noti.getNewValue();
 //			System.out.println("Of: " + affectedObj);
-//			System.out.println("To: " + valueRepr);
+//			System.out.println("To: " + value.toString());
 			try {
-				if (affectedElement.eClass().getName().equals("Person") && feature.getName().equals("fullName")) {
+				if ((affectedElement.eClass().getName().equals("Male") || affectedElement.eClass().getName().equals("Female")) && feature.getName().equals("name")) {
 					if (value != null) {
 						String[] name = ((String) value).split(", ");
 						if (name.length != 2)
@@ -152,10 +152,21 @@ public class ChangeListener extends EContentAdapter {
 		String objectName = state.uniqueObjectNameForClass(className);
 		try {
 			api.createObject(className, objectName);
-			for (EAttribute attr : affectedElement.eClass().getEAttributes()) {
+			for (EAttribute attr : affectedElement.eClass().getEAllAttributes()) {
 				String attrName = attr.getName();
 				Object attrValue = affectedElement.eGet(attr);
-				api.setAttributeValue(objectName, attrName, format(attrValue));
+				if ((affectedElement.eClass().getName().equals("Male") || affectedElement.eClass().getName().equals("Female")) && attrName.equals("name")) {
+					if (attrValue != null) {
+						String[] name = ((String) attrValue).split(", ");
+						if (name.length != 2)
+							logWriter.println("Wrong full name format: " + attrValue.toString());
+						else {
+							api.setAttributeValue(objectName, "familyName", "'" + name[0] + "'");
+							api.setAttributeValue(objectName, "givenName", "'" + name[1] + "'");
+						}
+					}
+				}
+				else api.setAttributeValue(objectName, attrName, format(attrValue));
 			}
 		} catch (UseApiException e) {
 			e.printStackTrace();
