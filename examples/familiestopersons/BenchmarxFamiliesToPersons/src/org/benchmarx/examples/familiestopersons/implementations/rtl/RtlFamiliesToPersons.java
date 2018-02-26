@@ -97,11 +97,11 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		eventBus.unregister(syncWorker);
 		edit.accept(getSourceModel());
 		eventBus.register(syncWorker);
-		logWriter.println("\n\n\nIdle source edit");
-		logWriter.println("================= Families =====================");
-		logWriter.println(new FamiliesComparator().familyToString(famReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nIdle source edit");
+//		logWriter.println("================= Families =====================");
+//		logWriter.println(new FamiliesComparator().familyToString(famReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 	}
 
 	@Override
@@ -110,22 +110,22 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		eventBus.unregister(syncWorker);
 		edit.accept(getTargetModel());
 		eventBus.register(syncWorker);
-		logWriter.println("\n\n\nIdle target edit");
-		logWriter.println("================= Persons =====================");
-		logWriter.println(new PersonsComparator().personsToString(perReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nIdle target edit");
+//		logWriter.println("================= Persons =====================");
+//		logWriter.println(new PersonsComparator().personsToString(perReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 	}
 
 	@Override
 	public void performAndPropagateSourceEdit(Consumer<FamilyRegister> edit) {
 		sortRules();
 		edit.accept(getSourceModel());
-		logWriter.println("\n\n\nSource edit");
-		logWriter.println("================= Families =====================");
-		logWriter.println(new FamiliesComparator().familyToString(famReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nSource edit");
+//		logWriter.println("================= Families =====================");
+//		logWriter.println(new FamiliesComparator().familyToString(famReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 		// Invalidate person model
 		perReg = null;
 	}
@@ -134,11 +134,11 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	public void performAndPropagateTargetEdit(Consumer<PersonRegister> edit) {
 		sortRules();
 		edit.accept(getTargetModel());
-		logWriter.println("\n\n\nTarget edit");
-		logWriter.println("================= Persons =====================");
-		logWriter.println(new PersonsComparator().personsToString(perReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nTarget edit");
+//		logWriter.println("================= Persons =====================");
+//		logWriter.println(new PersonsComparator().personsToString(perReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 		// Invalidate family model
 		famReg = null;
 		
@@ -151,13 +151,13 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	
 	@Override
 	public void terminateSynchronisationDialogue() {
-		logWriter.println("\n\n\nFinished");
-		logWriter.println("================= Families =====================");
-		logWriter.println(new FamiliesComparator().familyToString(famReg));
-		logWriter.println("================= Persons =====================");
-		logWriter.println(new PersonsComparator().personsToString(perReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nFinished");
+//		logWriter.println("================= Families =====================");
+//		logWriter.println(new FamiliesComparator().familyToString(famReg));
+//		logWriter.println("================= Persons =====================");
+//		logWriter.println(new PersonsComparator().personsToString(perReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 		super.terminateSynchronisationDialogue();
 		logWriter.println("END\n\n");
 		logWriter.close();

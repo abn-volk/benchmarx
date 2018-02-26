@@ -203,24 +203,24 @@ public class ScalabilityMeasurements {
 	
 	public static void main(String[] args) {
 		
-//		printHeader("Batch FWD:");
-//		for (int i = 50; i < 100000; i+=50) {			
-//			runBatchFWDMeasurements(i, 3, 5);
-//		}
-//		
-		printHeader("Incr. FWD:");
+		printHeader("Batch FWD:");
 		for (int i = 50; i < 100000; i+=50) {			
-			runIncrFWDMeasurements(i, 3, 5);
-		}		
-		
-//		printHeader("Batch BWD:");
-//		for (int i = 50; i < 100000; i+=50) {			
-//			runBatchBWDMeasurements(i, 3, 5);
-//		}	
-		
-		printHeader("Incr. BWD:");
-		for (int i = 50; i < 100000; i+=50) {			
-			runIncrBWDMeasurements(i, 3, 5);
+			runBatchFWDMeasurements(i, 3, 5);
 		}
+		
+//		printHeader("Incr. FWD:");
+//		for (int i = 50; i < 100000; i+=50) {			
+//			runIncrFWDMeasurements(i, 3, 5);
+//		}		
+		
+		printHeader("Batch BWD:");
+		for (int i = 50; i < 100000; i+=50) {			
+			runBatchBWDMeasurements(i, 3, 5);
+		}	
+		
+//		printHeader("Incr. BWD:");
+//		for (int i = 50; i < 100000; i+=50) {			
+//			runIncrBWDMeasurements(i, 3, 5);
+//		}
 	}
 }
