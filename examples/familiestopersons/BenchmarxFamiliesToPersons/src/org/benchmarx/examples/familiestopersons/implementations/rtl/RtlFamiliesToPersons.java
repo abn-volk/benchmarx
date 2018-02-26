@@ -192,23 +192,25 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	}
 	
 	private void sortRules() {
-		boolean parent = configurator.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD);
-		boolean existing = configurator.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW);
-		Main.matchComparator = new Comparator<Match>() {
-			@Override
-			public int compare(Match arg0, Match arg1) {
-				boolean arg0Parent = arg0.getRule().getName().contains("Father") || arg0.getRule().getName().contains("Mother");
-				boolean arg1Parent = arg1.getRule().getName().contains("Father") || arg1.getRule().getName().contains("Mother");
-				boolean arg0New = arg0.getRule().getName().contains("NewFamily");
-				boolean arg1New = arg1.getRule().getName().contains("NewFamily");
-				int arg0Point = 0;
-				int arg1Point = 0;
-				if (parent == arg0Parent) arg0Point--;
-				if (existing == !arg0New) arg0Point--;
-				if (parent == arg1Parent) arg1Point--;
-				if (existing == !arg1New) arg1Point--;
-				return Integer.compare(arg0Point, arg1Point);
-			}
-		};
+		if (configurator != null) {
+			boolean parent = configurator.decide(Decisions.PREFER_CREATING_PARENT_TO_CHILD);
+			boolean existing = configurator.decide(Decisions.PREFER_EXISTING_FAMILY_TO_NEW);
+			Main.matchComparator = new Comparator<Match>() {
+				@Override
+				public int compare(Match arg0, Match arg1) {
+					boolean arg0Parent = arg0.getRule().getName().contains("Father") || arg0.getRule().getName().contains("Mother");
+					boolean arg1Parent = arg1.getRule().getName().contains("Father") || arg1.getRule().getName().contains("Mother");
+					boolean arg0New = arg0.getRule().getName().contains("NewFamily");
+					boolean arg1New = arg1.getRule().getName().contains("NewFamily");
+					int arg0Point = 0;
+					int arg1Point = 0;
+					if (parent == arg0Parent) arg0Point--;
+					if (existing == !arg0New) arg0Point--;
+					if (parent == arg1Parent) arg1Point--;
+					if (existing == !arg1New) arg1Point--;
+					return Integer.compare(arg0Point, arg1Point);
+				}
+			};
+		}
 	}
 }
