@@ -115,21 +115,8 @@ public class ChangeListener extends EContentAdapter {
 //			System.out.println("Of: " + affectedObj);
 //			System.out.println("To: " + value.toString());
 			try {
-				if ((affectedElement.eClass().getName().equals("Male") || affectedElement.eClass().getName().equals("Female")) && feature.getName().equals("name")) {
-					if (value != null) {
-						String[] name = ((String) value).split(", ");
-						if (name.length != 2)
-							logWriter.println("Wrong full name format: " + value.toString());
-						else {
-							api.setAttributeValue(affectedObj, "familyName", name[0]);
-							api.setAttributeValue(affectedObj, "givenName", name[1]);
-						}
-					}
-				}
-				else {
-					String valueRepr = (value == null)? "Undefined" : format(value);
-					api.setAttributeValue(affectedObj, feature.getName(), valueRepr);
-				}
+				String valueRepr = (value == null)? "Undefined" : format(value);
+				api.setAttributeValue(affectedObj, feature.getName(), valueRepr);
 			} catch (UseApiException e) {
 				logWriter.println("Error when setting attribute: " + e.getMessage());
 				e.printStackTrace();
@@ -155,18 +142,7 @@ public class ChangeListener extends EContentAdapter {
 			for (EAttribute attr : affectedElement.eClass().getEAllAttributes()) {
 				String attrName = attr.getName();
 				Object attrValue = affectedElement.eGet(attr);
-				if ((affectedElement.eClass().getName().equals("Male") || affectedElement.eClass().getName().equals("Female")) && attrName.equals("name")) {
-					if (attrValue != null) {
-						String[] name = ((String) attrValue).split(", ");
-						if (name.length != 2)
-							logWriter.println("Wrong full name format: " + attrValue.toString());
-						else {
-							api.setAttributeValue(objectName, "familyName", "'" + name[0] + "'");
-							api.setAttributeValue(objectName, "givenName", "'" + name[1] + "'");
-						}
-					}
-				}
-				else api.setAttributeValue(objectName, attrName, format(attrValue));
+				api.setAttributeValue(objectName, attrName, format(attrValue));
 			}
 		} catch (UseApiException e) {
 			e.printStackTrace();

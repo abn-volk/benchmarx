@@ -55,9 +55,12 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		// Create new USE session
 		session = new Session();
 		File familiesUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Families.use");
-		File personsUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Persons2.use");
-		String tggName = "/home/pnh/NCKH/use-5.0.0/Families2Persons/Families2Persons2.tgg";
+		File personsUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Persons.use");
+		String tggName = "/home/pnh/NCKH/use-5.0.0/Families2Persons/Families2Persons3.tgg";
 		File logFile = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/log.txt");
+		configurator = new Configurator<Decisions>();
+		configurator.makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, true);
+		configurator.makeDecision(Decisions.PREFER_EXISTING_FAMILY_TO_NEW, true);
 		try {
 			logWriter = new PrintWriter(logFile);
 		} catch (FileNotFoundException e) {

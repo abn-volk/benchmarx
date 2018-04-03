@@ -166,10 +166,9 @@ public class ModelConverter {
 			eObjToUse.put(person, personObj.name());
 			perReg.getPersons().add(person);
 			//System.out.println(personObj.state(state).attributeValueMap().toString());
-			Value personNameValue = personObj.state(state).attributeValue("givenName");
-			Value familyNameValue = personObj.state(state).attributeValue("familyName");
-			if (personNameValue.isDefined() && familyNameValue.isDefined()) {
-				String personName = ((StringValue) familyNameValue).value() + ", " + ((StringValue) personNameValue).value();
+			Value personNameValue = personObj.state(state).attributeValue("name");
+			if (personNameValue.isDefined()) {
+				String personName = ((StringValue) personNameValue).value();
 				person.setName(personName);
 			}
 			Value personBirthdayValue = personObj.state(state).attributeValue("birthday");
