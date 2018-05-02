@@ -1,0 +1,248 @@
+transformation Families2Persons2
+direction backward
+
+rule Register2Register
+checkSource(
+){
+    fr: FamilyRegister
+}checkTarget(
+){
+    pr: PersonRegister
+}checkCorr(
+){
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+}
+end
+
+rule Father2Male
+checkSource(
+    fr: FamilyRegister
+    fm: Family
+    (fr, fm): FamilyRegistration
+    [fm.name <> Undefined]
+){
+    father: FamilyMember
+    (fm, father): Father
+}checkTarget(
+    pr: PersonRegister
+){
+    mp: Male
+    (pr, mp): PersonRegistration
+    [fm.name = mp.name.split(', ')->at(1)]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (father, mp) as (f, mp) in f2mp:F2MP
+    (fm*, mp) as (fm, mp) in fm2mp:FM2MP
+    F2MP:[self.mp.name.split(', ')->at(2) = self.f.name]
+    `self.mp.name := self.f.familyFather.name + ', ' + self.f.name`
+    `self.f.name := self.mp.name.split(', ')->at(2)`
+    FM2MP:[self.mp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    ``
+}
+end
+
+rule Mother2Female
+checkSource(
+    fr: FamilyRegister
+    fm: Family
+    (fr, fm): FamilyRegistration
+    [fm.name <> Undefined]
+){
+    mother: FamilyMember
+    (fm, mother): Mother
+}checkTarget(
+    pr: PersonRegister
+){
+    fp: Female
+    (pr, fp): PersonRegistration
+    [fm.name = fp.name.split(', ')->at(1)]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (mother, fp) as (m, fp) in m2fp:M2FP
+    (fm*, fp) as (fm, fp) in fm2fp:FM2FP
+    M2FP:[self.fp.name.split(', ')->at(2) = self.m.name]
+    `self.fp.name := self.m.familyMother.name + ', ' + self.m.name`
+    `self.m.name := self.fp.name.split(', ')->at(2)`
+    FM2FP:[self.fp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    ``
+}
+end
+
+rule Son2Male
+checkSource(
+    fr: FamilyRegister
+    fm: Family
+    (fr, fm): FamilyRegistration
+    [fm.name <> Undefined]
+){
+    son: FamilyMember
+    (fm, son): Sons
+}checkTarget(
+    pr: PersonRegister
+){
+    mp: Male
+    (pr, mp): PersonRegistration
+    [fm.name = mp.name.split(', ')->at(1)]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (son, mp) as (s, mp) in s2mp:S2MP
+    (fm*, mp) as (fm, mp) in fm2mp:FM2MP
+    S2MP:[self.mp.name.split(', ')->at(2) = self.s.name]
+    `self.mp.name := self.s.familySon.name + ', ' + self.s.name`
+    `self.s.name := self.mp.name.split(', ')->at(2)`
+    FM2MP:[self.mp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    `self.fm.name := self.mp.name.split(', ')->at(1)`
+}
+end
+
+rule Daughter2Female
+checkSource(
+    fr: FamilyRegister
+    fm: Family
+    (fr, fm): FamilyRegistration
+    [fm.name <> Undefined]
+){
+    daughter: FamilyMember
+    (fm, daughter): Daughters
+}checkTarget(
+    pr: PersonRegister
+){
+    fp: Female
+    (pr, fp): PersonRegistration
+    [fm.name = fp.name.split(', ')->at(1)]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (daughter, fp) as (d, fp) in d2fp:D2FP
+    (fm*, fp) as (fm, fp) in fm2fp:FM2FP
+    D2FP:[self.fp.name.split(', ')->at(2) = self.d.name]
+    `self.fp.name := self.d.familyDaughter.name + ', ' + self.d.name`
+    `self.d.name := self.fp.name.split(', ')->at(2)`
+    FM2FP:[self.fp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    ``
+}
+end
+
+
+rule Father2MaleNewFamily
+checkSource(
+    fr: FamilyRegister
+){
+    fm: Family
+    father: FamilyMember
+    (fr, fm): FamilyRegistration
+    (fm, father): Father
+    [fm.name <> Undefined]
+}checkTarget(
+    pr: PersonRegister
+){
+    mp: Male
+    (pr, mp): PersonRegistration
+    [mp.name <> Undefined]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (father, mp) as (f, mp) in f2mp:F2MP
+    (fm*, mp) as (fm, mp) in fm2mp:FM2MP
+    F2MP:[self.mp.name.split(', ')->at(2) = self.f.name]
+    `self.mp.name := self.f.familyFather.name + ', ' + self.f.name`
+    `self.f.name := self.mp.name.split(', ')->at(2)`
+    FM2MP:[self.mp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    `self.fm.name := self.mp.name.split(', ')->at(1)`
+}
+end
+
+rule Mother2FemaleNewFamily
+checkSource(
+    fr: FamilyRegister
+){
+    fm: Family
+    mother: FamilyMember
+    (fr, fm): FamilyRegistration
+    (fm, mother): Mother
+    [fm.name <> Undefined]
+}checkTarget(
+    pr: PersonRegister
+){
+    fp: Female
+    (pr, fp): PersonRegistration
+    [fp.name <> Undefined]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (mother, fp) as (m, fp) in m2fp:M2FP
+    (fm*, fp) as (fm, fp) in fm2fp:FM2FP
+    M2FP:[self.fp.name.split(', ')->at(2) = self.m.name]
+    `self.fp.name := self.m.familyMother.name + ', ' + self.m.name`
+    `self.m.name := self.fp.name.split(', ')->at(2)`
+    FM2FP:[self.fp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    `self.fm.name := self.fp.name.split(', ')->at(1)`
+}
+end
+
+rule Son2MaleNewFamily
+checkSource(
+    fr: FamilyRegister
+){
+    fm: Family
+    son: FamilyMember
+    (fr, fm): FamilyRegistration
+    (fm, son): Sons
+    [fm.name <> Undefined]
+}checkTarget(
+    pr: PersonRegister
+){
+    mp: Male
+    (pr, mp): PersonRegistration
+    [mp.name <> Undefined]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (son, mp) as (s, mp) in s2mp:S2MP
+    (fm*, mp) as (fm, mp) in fm2mp:FM2MP
+    S2MP:[self.mp.name.split(', ')->at(2) = self.s.name]
+    `self.mp.name := self.s.familySon.name + ', ' + self.s.name`
+    `self.s.name := self.mp.name.split(', ')->at(2)`
+    FM2MP:[self.mp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    `self.fm.name := self.mp.name.split(', ')->at(1)`
+}
+end
+
+rule Daughter2FemaleNewFamily
+checkSource(
+    fr: FamilyRegister
+){
+    fm: Family
+    daughter: FamilyMember
+    (fr, fm): FamilyRegistration
+    (fm, daughter): Daughters
+    [fm.name <> Undefined]
+}checkTarget(
+    pr: PersonRegister
+){
+    fp: Female
+    (pr, fp): PersonRegistration
+    [fp.name <> Undefined]
+}checkCorr(
+    (fr, pr) as (fr, pr) in fr2pr:FR2PR
+){
+    (daughter, fp) as (d, fp) in d2fp:D2FP
+    (fm*, fp) as (fm, fp) in fm2fp:FM2FP
+    D2FP:[self.fp.name.split(', ')->at(2) = self.d.name]
+    `self.fp.name := self.d.familyDaughter.name + ', ' + self.d.name`
+    `self.d.name := self.fp.name.split(', ')->at(2)`
+    FM2FP:[self.fp.name.split(', ')->at(1) = self.fm.name]
+    ``
+    `self.fm.name := self.fp.name.split(', ')->at(1)`
+}
+end

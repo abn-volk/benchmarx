@@ -1,0 +1,39 @@
+model Families
+
+class FamilyRegister
+end
+
+class Family
+attributes
+    name: String
+end
+
+composition FamilyRegistration between
+    FamilyRegister [0..1] 
+    Family [*] role families
+end
+
+class FamilyMember
+attributes
+    name: String
+end
+
+composition Father between
+    Family [0..1] role familyFather
+    FamilyMember [0..1] role father
+end
+
+composition Mother between
+    Family [0..1] role familyMother
+    FamilyMember [0..1] role mother
+end
+
+composition Sons between
+    Family [0..1] role familySon
+    FamilyMember [*] role sons
+end
+
+composition Daughters between
+    Family [0..1] role familyDaughter
+    FamilyMember [*] role daughters
+end

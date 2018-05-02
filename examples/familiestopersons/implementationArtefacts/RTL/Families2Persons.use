@@ -1,0 +1,1920 @@
+model Families2Persons
+
+
+class FamilyRegister
+end
+
+class Family
+attributes
+    name: String
+end
+
+composition FamilyRegistration between
+    FamilyRegister [0..1] 
+    Family [*] role families
+end
+
+class FamilyMember
+attributes
+    name: String
+end
+
+composition Father between
+    Family [0..1] role familyFather
+    FamilyMember [0..1] role father
+end
+
+composition Mother between
+    Family [0..1] role familyMother
+    FamilyMember [0..1] role mother
+end
+
+composition Sons between
+    Family [0..1] role familySon
+    FamilyMember [*] role sons
+end
+
+composition Daughters between
+    Family [0..1] role familyDaughter
+    FamilyMember [*] role daughters
+end
+
+
+
+class PersonRegister
+end
+
+abstract class Person
+attributes
+    name: String
+    birthday: String
+end
+
+composition PersonRegistration between
+    PersonRegister [0..1]
+    Person [*] role persons
+end
+
+class Male < Person
+end
+
+class Female < Person
+end
+class FR2PR
+end
+
+class F2MP
+end
+
+class FM2MP
+end
+
+class M2FP
+end
+
+class FM2FP
+end
+
+class S2MP
+end
+
+class D2FP
+end
+
+association FR2PR_FamilyRegister between
+  FamilyRegister[1] role fr
+  FR2PR[0..1] role fr2pr
+end
+
+association FR2PR_PersonRegister between
+  PersonRegister[1] role pr
+  FR2PR[0..1] role fr2pr
+end
+
+association F2MP_FamilyMember between
+  FamilyMember[1] role f
+  F2MP[0..1] role f2mp
+end
+
+association F2MP_Male between
+  Male[1] role mp
+  F2MP[0..1] role f2mp
+end
+
+association FM2MP_Family between
+  Family[1] role fm
+  FM2MP[*] role fm2mp
+end
+
+association FM2MP_Male between
+  Male[1] role mp
+  FM2MP[0..1] role fm2mp
+end
+
+association M2FP_FamilyMember between
+  FamilyMember[1] role m
+  M2FP[0..1] role m2fp
+end
+
+association M2FP_Female between
+  Female[1] role fp
+  M2FP[0..1] role m2fp
+end
+
+association FM2FP_Family between
+  Family[1] role fm
+  FM2FP[*] role fm2fp
+end
+
+association FM2FP_Female between
+  Female[1] role fp
+  FM2FP[0..1] role fm2fp
+end
+
+association S2MP_FamilyMember between
+  FamilyMember[1] role s
+  S2MP[0..1] role s2mp
+end
+
+association S2MP_Male between
+  Male[1] role mp
+  S2MP[0..1] role s2mp
+end
+
+association D2FP_FamilyMember between
+  FamilyMember[1] role d
+  D2FP[0..1] role d2fp
+end
+
+association D2FP_Female between
+  Female[1] role fp
+  D2FP[0..1] role d2fp
+end
+
+---------- Correlation invariants ----------
+constraints
+context F2MP inv:
+    self.mp.name.split(', ')->at(2) = self.f.name
+context FM2MP inv:
+    self.mp.name.split(', ')->at(1) = self.fm.name
+context M2FP inv:
+    self.fp.name.split(', ')->at(2) = self.m.name
+context FM2FP inv:
+    self.fp.name.split(', ')->at(1) = self.fm.name
+context S2MP inv:
+    self.mp.name.split(', ')->at(2) = self.s.name
+context FM2MP inv:
+    self.mp.name.split(', ')->at(1) = self.fm.name
+context D2FP inv:
+    self.fp.name.split(', ')->at(2) = self.d.name
+context FM2FP inv:
+    self.fp.name.split(', ')->at(1) = self.fm.name
+context F2MP inv:
+    self.mp.name.split(', ')->at(2) = self.f.name
+context FM2MP inv:
+    self.mp.name.split(', ')->at(1) = self.fm.name
+context M2FP inv:
+    self.fp.name.split(', ')->at(2) = self.m.name
+context FM2FP inv:
+    self.fp.name.split(', ')->at(1) = self.fm.name
+context S2MP inv:
+    self.mp.name.split(', ')->at(2) = self.s.name
+context FM2MP inv:
+    self.mp.name.split(', ')->at(1) = self.fm.name
+context D2FP inv:
+    self.fp.name.split(', ')->at(2) = self.d.name
+context FM2FP inv:
+    self.fp.name.split(', ')->at(1) = self.fm.name
+
+---------- RuleCollection ----------
+class RuleCollection
+operations
+---------- Forward transformations ----------
+Register2Register_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister))
+Father2Male_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Mother2Female_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Son2Male_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Daughter2Female_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Father2MaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Mother2FemaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Son2MaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Daughter2FemaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+
+---------- Backward transformations ----------
+Register2Register_backTrafo (
+    matchTR: Tuple(pr: PersonRegister))
+Father2Male_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Mother2Female_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+Son2Male_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Daughter2Female_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+Father2MaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Mother2FemaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+Son2MaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Daughter2FemaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+
+---------- Integration transformations ----------
+Register2Register_integration (
+    matchSR: Tuple(fr: FamilyRegister),
+    matchTR: Tuple(pr: PersonRegister))
+Father2Male_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Mother2Female_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+Son2Male_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Daughter2Female_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+Father2MaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Mother2FemaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+Son2MaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+Daughter2FemaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+
+---------- Co-evolution transformations ----------
+Register2Register_coEvol ()
+Father2Male_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Mother2Female_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Son2Male_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Daughter2Female_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Father2MaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Mother2FemaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Son2MaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+Daughter2FemaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+end
+
+
+---------- Transformation constraints ----------
+constraints
+context RuleCollection::Register2Register_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister))
+pre Register2Register_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+fr.fr2pr->size() = 0
+
+post Register2Register_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+(PersonRegister.allInstances - PersonRegister.allInstances@pre)->exists(pr|
+(FR2PR.allInstances - FR2PR.allInstances@pre)->exists(fr2pr|
+fr.fr2pr->includes(fr2pr) and
+fr2pr.fr->includes(fr) and
+pr.fr2pr->includes(fr2pr) and
+fr2pr.pr->includes(pr)))
+
+context RuleCollection::Father2Male_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Father2Male_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+father.familyFather->includes(fm) and 
+fm.father->includes(father) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+father.f2mp->size() = 0
+
+post Father2Male_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))
+
+context RuleCollection::Mother2Female_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Mother2Female_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+mother.familyMother->includes(fm) and 
+fm.mother->includes(mother) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mother.m2fp->size() = 0
+
+post Mother2Female_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and
+fm.name = fp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))
+
+context RuleCollection::Son2Male_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Son2Male_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.sons->includes(son) and 
+son.familySon->includes(fm) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+son.s2mp->size() = 0
+
+post Son2Male_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))
+
+context RuleCollection::Daughter2Female_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Daughter2Female_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.daughters->includes(daughter) and 
+daughter.familyDaughter->includes(fm) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+daughter.d2fp->size() = 0
+
+post Daughter2Female_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))
+
+context RuleCollection::Father2MaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Father2MaleNewFamily_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+father.familyFather->includes(fm) and 
+fm.father->includes(father) and 
+fm.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+father.f2mp->size() = 0
+
+post Father2MaleNewFamily_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and
+mp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))
+
+context RuleCollection::Mother2FemaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Mother2FemaleNewFamily_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+mother.familyMother->includes(fm) and 
+fm.mother->includes(mother) and 
+fm.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mother.m2fp->size() = 0
+
+post Mother2FemaleNewFamily_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and
+fp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))
+
+context RuleCollection::Son2MaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Son2MaleNewFamily_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.sons->includes(son) and 
+son.familySon->includes(fm) and 
+fm.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+son.s2mp->size() = 0
+
+post Son2MaleNewFamily_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and
+mp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))
+
+context RuleCollection::Daughter2FemaleNewFamily_forwTrafo (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Daughter2FemaleNewFamily_forwTrafo_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.daughters->includes(daughter) and 
+daughter.familyDaughter->includes(fm) and 
+fm.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+daughter.d2fp->size() = 0
+
+post Daughter2FemaleNewFamily_forwTrafo_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and
+fp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))
+
+context RuleCollection::Register2Register_backTrafo (
+    matchTR: Tuple(pr: PersonRegister))
+pre Register2Register_backTrafo_pre: 
+let pr:PersonRegister = matchTR.pr in
+pr.fr2pr->size() = 0
+
+post Register2Register_backTrafo_post:
+let pr:PersonRegister = matchTR.pr in
+(FamilyRegister.allInstances - FamilyRegister.allInstances@pre)->exists(fr|
+(FR2PR.allInstances - FR2PR.allInstances@pre)->exists(fr2pr|
+fr.fr2pr->includes(fr2pr) and
+fr2pr.fr->includes(fr) and
+pr.fr2pr->includes(fr2pr) and
+fr2pr.pr->includes(pr)))
+
+context RuleCollection::Father2Male_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Father2Male_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.father->size() < 1 and
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mp.f2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Father2Male_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(father|
+father.familyFather->includes(fm) and
+fm.father->includes(father) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))
+
+context RuleCollection::Mother2Female_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Mother2Female_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.mother->size() < 1 and
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and 
+fm.name = fp.name.split(', ')->at(1) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+fp.m2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Mother2Female_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(mother|
+mother.familyMother->includes(fm) and
+fm.mother->includes(mother) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))
+
+context RuleCollection::Son2Male_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Son2Male_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mp.s2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Son2Male_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(son|
+fm.sons->includes(son) and
+son.familySon->includes(fm) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))
+
+context RuleCollection::Daughter2Female_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Daughter2Female_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+fp.d2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Daughter2Female_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(daughter|
+fm.daughters->includes(daughter) and
+daughter.familyDaughter->includes(fm) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))
+
+context RuleCollection::Father2MaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Father2MaleNewFamily_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and 
+mp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mp.f2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Father2MaleNewFamily_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(father|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+father.familyFather->includes(fm) and
+fm.father->includes(father) and
+fm.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))))
+
+context RuleCollection::Mother2FemaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Mother2FemaleNewFamily_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and 
+fp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+fp.m2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Mother2FemaleNewFamily_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(mother|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+mother.familyMother->includes(fm) and
+fm.mother->includes(mother) and
+fm.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))))
+
+context RuleCollection::Son2MaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Son2MaleNewFamily_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and 
+mp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mp.s2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Son2MaleNewFamily_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(son|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+fm.sons->includes(son) and
+son.familySon->includes(fm) and
+fm.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))))
+
+context RuleCollection::Daughter2FemaleNewFamily_backTrafo (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Daughter2FemaleNewFamily_backTrafo_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and 
+fp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+fp.d2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Daughter2FemaleNewFamily_backTrafo_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(daughter|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+fm.daughters->includes(daughter) and
+daughter.familyDaughter->includes(fm) and
+fm.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))))
+
+context RuleCollection::Register2Register_integration (
+    matchSR: Tuple(fr: FamilyRegister),
+    matchTR: Tuple(pr: PersonRegister))
+pre Register2Register_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let pr:PersonRegister = matchTR.pr in
+fr.fr2pr->size() = 0 and
+pr.fr2pr->size() = 0
+
+post Register2Register_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let pr:PersonRegister = matchTR.pr in
+(FR2PR.allInstances - FR2PR.allInstances@pre)->exists(fr2pr|
+fr.fr2pr->includes(fr2pr) and
+fr2pr.fr->includes(fr) and
+pr.fr2pr->includes(fr2pr) and
+fr2pr.pr->includes(pr))
+
+context RuleCollection::Father2Male_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Father2Male_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+father.familyFather->includes(fm) and 
+fm.father->includes(father) and
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+father.f2mp->size() = 0 and
+mp.f2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Father2Male_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))
+
+context RuleCollection::Mother2Female_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Mother2Female_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+mother.familyMother->includes(fm) and 
+fm.mother->includes(mother) and
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and 
+fm.name = fp.name.split(', ')->at(1) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mother.m2fp->size() = 0 and
+fp.m2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Mother2Female_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))
+
+context RuleCollection::Son2Male_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Son2Male_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.sons->includes(son) and 
+son.familySon->includes(fm) and
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+son.s2mp->size() = 0 and
+mp.s2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Son2Male_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))
+
+context RuleCollection::Daughter2Female_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Daughter2Female_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.daughters->includes(daughter) and 
+daughter.familyDaughter->includes(fm) and
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+daughter.d2fp->size() = 0 and
+fp.d2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Daughter2Female_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))
+
+context RuleCollection::Father2MaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, father: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Father2MaleNewFamily_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+father.familyFather->includes(fm) and 
+fm.father->includes(father) and 
+fm.name <> Undefined and
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and 
+mp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+father.f2mp->size() = 0 and
+mp.f2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Father2MaleNewFamily_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let father:FamilyMember = matchSR.father in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))
+
+context RuleCollection::Mother2FemaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, mother: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Mother2FemaleNewFamily_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+mother.familyMother->includes(fm) and 
+fm.mother->includes(mother) and 
+fm.name <> Undefined and
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and 
+fp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+mother.m2fp->size() = 0 and
+fp.m2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Mother2FemaleNewFamily_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let mother:FamilyMember = matchSR.mother in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))
+
+context RuleCollection::Son2MaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, son: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, mp: Male))
+pre Son2MaleNewFamily_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.sons->includes(son) and 
+son.familySon->includes(fm) and 
+fm.name <> Undefined and
+mp.personRegister->includes(pr) and 
+pr.persons->includes(mp) and 
+mp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+son.s2mp->size() = 0 and
+mp.s2mp->size() = 0 and
+mp.fm2mp->size() = 0
+
+post Son2MaleNewFamily_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let son:FamilyMember = matchSR.son in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let mp:Male = matchTR.mp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))
+
+context RuleCollection::Daughter2FemaleNewFamily_integration (
+    matchSR: Tuple(fr: FamilyRegister, fm: Family, daughter: FamilyMember),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTR: Tuple(pr: PersonRegister, fp: Female))
+pre Daughter2FemaleNewFamily_integration_pre: 
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.daughters->includes(daughter) and 
+daughter.familyDaughter->includes(fm) and 
+fm.name <> Undefined and
+pr.persons->includes(fp) and 
+fp.personRegister->includes(pr) and 
+fp.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr) and
+daughter.d2fp->size() = 0 and
+fp.d2fp->size() = 0 and
+fp.fm2fp->size() = 0
+
+post Daughter2FemaleNewFamily_integration_post:
+let fr:FamilyRegister = matchSR.fr in
+let fm:Family = matchSR.fm in
+let daughter:FamilyMember = matchSR.daughter in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTR.pr in
+let fp:Female = matchTR.fp in
+FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))
+
+context RuleCollection::Register2Register_coEvol ()
+pre Register2Register_coEvol_pre: 
+true
+
+
+post Register2Register_coEvol_post:
+(FamilyRegister.allInstances - FamilyRegister.allInstances@pre)->exists(fr|
+(PersonRegister.allInstances - PersonRegister.allInstances@pre)->exists(pr|
+(FR2PR.allInstances - FR2PR.allInstances@pre)->exists(fr2pr|
+fr.fr2pr->includes(fr2pr) and
+fr2pr.fr->includes(fr) and
+pr.fr2pr->includes(fr2pr) and
+fr2pr.pr->includes(pr))))
+
+context RuleCollection::Father2Male_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Father2Male_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.father->size() < 1 and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Father2Male_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(father|
+father.familyFather->includes(fm) and
+fm.father->includes(father) and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))))
+
+context RuleCollection::Mother2Female_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Mother2Female_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fm.mother->size() < 1 and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Mother2Female_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(mother|
+mother.familyMother->includes(fm) and
+fm.mother->includes(mother) and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and
+fm.name = fp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))))
+
+context RuleCollection::Son2Male_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Son2Male_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Son2Male_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(son|
+fm.sons->includes(son) and
+son.familySon->includes(fm) and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name))))
+
+context RuleCollection::Daughter2Female_coEvol (
+    matchSL: Tuple(fr: FamilyRegister, fm: Family),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Daughter2Female_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.families->includes(fm) and 
+fm.familyRegister->includes(fr) and 
+fm.name <> Undefined and
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Daughter2Female_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fm:Family = matchSL.fm in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+Family.allInstances->includesAll(Set {fm})
+ and
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(daughter|
+fm.daughters->includes(daughter) and
+daughter.familyDaughter->includes(fm) and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name))))
+
+context RuleCollection::Father2MaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Father2MaleNewFamily_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Father2MaleNewFamily_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(father|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+father.familyFather->includes(fm) and
+fm.father->includes(father) and
+fm.name <> Undefined and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and
+mp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+father.f2mp->includes(f2mp) and
+f2mp.f->includes(father) and
+mp.f2mp->includes(f2mp) and
+f2mp.mp->includes(mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+f2mp.mp.name.split(', ')->at(2) = f2mp.f.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))))
+
+context RuleCollection::Mother2FemaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Mother2FemaleNewFamily_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Mother2FemaleNewFamily_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(mother|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+mother.familyMother->includes(fm) and
+fm.mother->includes(mother) and
+fm.name <> Undefined and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and
+fp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(M2FP.allInstances - M2FP.allInstances@pre)->exists(m2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+mother.m2fp->includes(m2fp) and
+m2fp.m->includes(mother) and
+m2fp.fp->includes(fp) and
+fp.m2fp->includes(m2fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+m2fp.fp.name.split(', ')->at(2) = m2fp.m.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))))
+
+context RuleCollection::Son2MaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Son2MaleNewFamily_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Son2MaleNewFamily_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(son|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+fm.sons->includes(son) and
+son.familySon->includes(fm) and
+fm.name <> Undefined and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Male.allInstances - Male.allInstances@pre)->exists(mp|
+mp.personRegister->includes(pr) and
+pr.persons->includes(mp) and
+mp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
+(FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
+son.s2mp->includes(s2mp) and
+s2mp.s->includes(son) and
+s2mp.mp->includes(mp) and
+mp.s2mp->includes(s2mp) and
+fm.fm2mp->includes(fm2mp) and
+fm2mp.fm->includes(fm) and
+mp.fm2mp->includes(fm2mp) and
+fm2mp.mp->includes(mp) and
+s2mp.mp.name.split(', ')->at(2) = s2mp.s.name and
+fm2mp.mp.name.split(', ')->at(1) = fm2mp.fm.name)))))
+
+context RuleCollection::Daughter2FemaleNewFamily_coEvol (
+    matchSL: Tuple(fr: FamilyRegister),
+    matchCL: Tuple(fr2pr: FR2PR),
+    matchTL: Tuple(pr: PersonRegister))
+pre Daughter2FemaleNewFamily_coEvol_pre: 
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+fr.fr2pr->includes(fr2pr) and 
+fr2pr.fr->includes(fr) and 
+pr.fr2pr->includes(fr2pr) and 
+fr2pr.pr->includes(pr)
+
+post Daughter2FemaleNewFamily_coEvol_post:
+let fr:FamilyRegister = matchSL.fr in
+let fr2pr:FR2PR = matchCL.fr2pr in
+let pr:PersonRegister = matchTL.pr in
+FamilyRegister.allInstances->includesAll(Set {fr})
+ and
+(Family.allInstances - Family.allInstances@pre)->exists(fm|
+(FamilyMember.allInstances - FamilyMember.allInstances@pre)->exists(daughter|
+fr.families->includes(fm) and
+fm.familyRegister->includes(fr) and
+fm.daughters->includes(daughter) and
+daughter.familyDaughter->includes(fm) and
+fm.name <> Undefined and PersonRegister.allInstances->includesAll(Set {pr})
+ and
+(Female.allInstances - Female.allInstances@pre)->exists(fp|
+pr.persons->includes(fp) and
+fp.personRegister->includes(pr) and
+fp.name <> Undefined and FR2PR.allInstances->includesAll(Set {fr2pr})
+ and
+(D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
+(FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
+daughter.d2fp->includes(d2fp) and
+d2fp.d->includes(daughter) and
+fp.d2fp->includes(d2fp) and
+d2fp.fp->includes(fp) and
+fm2fp.fm->includes(fm) and
+fm.fm2fp->includes(fm2fp) and
+fm2fp.fp->includes(fp) and
+fp.fm2fp->includes(fm2fp) and
+d2fp.fp.name.split(', ')->at(2) = d2fp.d.name and
+fm2fp.fp.name.split(', ')->at(1) = fm2fp.fm.name)))))

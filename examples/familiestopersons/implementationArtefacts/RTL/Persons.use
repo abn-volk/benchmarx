@@ -1,0 +1,21 @@
+model Persons
+
+class PersonRegister
+end
+
+abstract class Person
+attributes
+    name: String
+    birthday: String
+end
+
+composition PersonRegistration between
+    PersonRegister [0..1]
+    Person [*] role persons
+end
+
+class Male < Person
+end
+
+class Female < Person
+end

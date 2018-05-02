@@ -54,10 +54,10 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	public void initiateSynchronisationDialogue() {
 		// Create new USE session
 		session = new Session();
-		File familiesUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Families.use");
-		File personsUse = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/Persons.use");
-		String tggName = "/home/pnh/NCKH/use-5.0.0/Families2Persons/Families2Persons3.tgg";
-		File logFile = new File("/home/pnh/NCKH/use-5.0.0/Families2Persons/log.txt");
+		File familiesUse = new File("../implementationArtefacts/RTL/Families.use");
+		File personsUse = new File("../implementationArtefacts/RTL/Persons.use");
+		String tggName = "../implementationArtefacts/RTL/Families2Persons4.tgg";
+		File logFile = new File("../implementationArtefacts/RTL/log.txt");
 		configurator = new Configurator<Decisions>();
 		configurator.makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, true);
 		configurator.makeDecision(Decisions.PREFER_EXISTING_FAMILY_TO_NEW, true);
@@ -100,11 +100,11 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		eventBus.unregister(syncWorker);
 		edit.accept(getSourceModel());
 		eventBus.register(syncWorker);
-		logWriter.println("\n\n\nIdle source edit");
-		logWriter.println("================= Families =====================");
-		logWriter.println(new FamiliesComparator().familyToString(famReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nIdle source edit");
+//		logWriter.println("================= Families =====================");
+//		logWriter.println(new FamiliesComparator().familyToString(famReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 	}
 
 	@Override
@@ -113,22 +113,22 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		eventBus.unregister(syncWorker);
 		edit.accept(getTargetModel());
 		eventBus.register(syncWorker);
-		logWriter.println("\n\n\nIdle target edit");
-		logWriter.println("================= Persons =====================");
-		logWriter.println(new PersonsComparator().personsToString(perReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nIdle target edit");
+//		logWriter.println("================= Persons =====================");
+//		logWriter.println(new PersonsComparator().personsToString(perReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 	}
 
 	@Override
 	public void performAndPropagateSourceEdit(Consumer<FamilyRegister> edit) {
 		sortRules();
 		edit.accept(getSourceModel());
-		logWriter.println("\n\n\nSource edit");
-		logWriter.println("================= Families =====================");
-		logWriter.println(new FamiliesComparator().familyToString(famReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nSource edit");
+//		logWriter.println("================= Families =====================");
+//		logWriter.println(new FamiliesComparator().familyToString(famReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 		// Invalidate person model
 		perReg = null;
 	}
@@ -137,11 +137,11 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	public void performAndPropagateTargetEdit(Consumer<PersonRegister> edit) {
 		sortRules();
 		edit.accept(getTargetModel());
-		logWriter.println("\n\n\nTarget edit");
-		logWriter.println("================= Persons =====================");
-		logWriter.println(new PersonsComparator().personsToString(perReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nTarget edit");
+//		logWriter.println("================= Persons =====================");
+//		logWriter.println(new PersonsComparator().personsToString(perReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 		// Invalidate family model
 		famReg = null;
 		
@@ -154,15 +154,15 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	
 	@Override
 	public void terminateSynchronisationDialogue() {
-		logWriter.println("\n\n\nFinished");
-		logWriter.println("================= Families =====================");
-		logWriter.println(new FamiliesComparator().familyToString(famReg));
-		logWriter.println("================= Persons =====================");
-		logWriter.println(new PersonsComparator().personsToString(perReg));
-		logWriter.println("================= USE =====================");
-		logWriter.println(state.allObjects().toString());
+//		logWriter.println("\n\n\nFinished");
+//		logWriter.println("================= Families =====================");
+//		logWriter.println(new FamiliesComparator().familyToString(famReg));
+//		logWriter.println("================= Persons =====================");
+//		logWriter.println(new PersonsComparator().personsToString(perReg));
+//		logWriter.println("================= USE =====================");
+//		logWriter.println(state.allObjects().toString());
 		super.terminateSynchronisationDialogue();
-		logWriter.println("END\n\n");
+//		logWriter.println("END\n\n");
 		logWriter.close();
 	}
 
