@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -20,10 +21,10 @@ import org.tzi.use.main.Session;
 import org.tzi.use.uml.sys.MSystemState;
 import org.uet.dse.rtlplus.Main;
 import org.uet.dse.rtlplus.RTLLoader;
+import org.uet.dse.rtlplus.matching.BackwardMatchManager;
+import org.uet.dse.rtlplus.matching.ForwardMatchManager;
 import org.uet.dse.rtlplus.matching.Match;
-import org.uet.dse.rtlplus.sync.SyncWorker;
-
-import com.google.common.eventbus.EventBus;
+import org.uet.dse.rtlplus.matching.MatchManager;
 
 import Families.FamiliesFactory;
 import Families.FamilyRegister;
@@ -42,8 +43,8 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	private Map<EObject, String> eObjToUse;
 	private ChangeListener listener;
 	private ModelConverter converter;
-	private SyncWorker syncWorker;
-	private EventBus eventBus;
+//	private SyncWorker syncWorker;
+//	private EventBus eventBus;
 	private Configurator<Decisions> configurator;
 	
 	public RtlFamiliesToPersons() {
@@ -71,8 +72,8 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		state = session.system().state();
 		api = UseSystemApi.create(session);
 		converter = new ModelConverter(session, state, logWriter, api);
-		syncWorker = new SyncWorker(null, logWriter, session);
-		eventBus = session.system().getEventBus();
+//		syncWorker = new SyncWorker(null, logWriter, session);
+//		eventBus = session.system().getEventBus();
 		try {
 			api.createObject("FamilyRegister", "famReg");
 			api.createObject("PersonRegister", "perReg");
@@ -91,15 +92,15 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		} catch (UseApiException e) {
 			e.printStackTrace();
 		}
-		eventBus.register(syncWorker);
+//		eventBus.register(syncWorker);
 	}
 	
 	@Override
 	public void performIdleSourceEdit(Consumer<FamilyRegister> edit) {
 		sortRules();
-		eventBus.unregister(syncWorker);
+//		eventBus.unregister(syncWorker);
 		edit.accept(getSourceModel());
-		eventBus.register(syncWorker);
+//		eventBus.register(syncWorker);
 //		logWriter.println("\n\n\nIdle source edit");
 //		logWriter.println("================= Families =====================");
 //		logWriter.println(new FamiliesComparator().familyToString(famReg));
@@ -110,9 +111,9 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 	@Override
 	public void performIdleTargetEdit(Consumer<PersonRegister> edit) {
 		sortRules();
-		eventBus.unregister(syncWorker);
+//		eventBus.unregister(syncWorker);
 		edit.accept(getTargetModel());
-		eventBus.register(syncWorker);
+//		eventBus.register(syncWorker);
 //		logWriter.println("\n\n\nIdle target edit");
 //		logWriter.println("================= Persons =====================");
 //		logWriter.println(new PersonsComparator().personsToString(perReg));
@@ -129,6 +130,17 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 //		logWriter.println(new FamiliesComparator().familyToString(famReg));
 //		logWriter.println("================= USE =====================");
 //		logWriter.println(state.allObjects().toString());
+		MatchManager manager = new ForwardMatchManager(state, false);
+		List<Match> matches;
+		boolean hasSuccess = false;
+		do {
+			matches = manager.findMatches();
+			for (Match match : matches) {
+				if (match.run(state, logWriter))
+					hasSuccess = true;
+			}
+		}
+		while (hasSuccess && matches.size() > 0);
 		// Invalidate person model
 		perReg = null;
 	}
@@ -142,6 +154,17 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 //		logWriter.println(new PersonsComparator().personsToString(perReg));
 //		logWriter.println("================= USE =====================");
 //		logWriter.println(state.allObjects().toString());
+		MatchManager manager = new BackwardMatchManager(state, false);
+		List<Match> matches;
+		boolean hasSuccess = false;
+		do {
+			matches = manager.findMatches();
+			for (Match match : matches) {
+				if (match.run(state, logWriter))
+					hasSuccess = true;
+			}
+		}
+		while (hasSuccess && matches.size() > 0);
 		// Invalidate family model
 		famReg = null;
 		
