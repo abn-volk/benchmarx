@@ -56,7 +56,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		session = new Session();
 		File familiesUse = new File("../implementationArtefacts/RTL/Families.use");
 		File personsUse = new File("../implementationArtefacts/RTL/Persons.use");
-		String tggName = "../implementationArtefacts/RTL/Families2Persons4.tgg";
+		String tggName = "../implementationArtefacts/RTL/Families2Persons3.tgg";
 		File logFile = new File("../implementationArtefacts/RTL/log.txt");
 		configurator = new Configurator<Decisions>();
 		configurator.makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, true);
