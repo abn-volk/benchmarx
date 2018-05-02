@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.benchmarx.Configurator;
 import org.benchmarx.emf.BXToolForEMF;
@@ -57,7 +58,7 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		session = new Session();
 		File familiesUse = new File("../implementationArtefacts/RTL/Families.use");
 		File personsUse = new File("../implementationArtefacts/RTL/Persons.use");
-		String tggName = "../implementationArtefacts/RTL/Families2Persons3.tgg";
+		String tggName = "../implementationArtefacts/RTL/Families2Persons4.tgg";
 		File logFile = new File("../implementationArtefacts/RTL/log.txt");
 		configurator = new Configurator<Decisions>();
 		configurator.makeDecision(Decisions.PREFER_CREATING_PARENT_TO_CHILD, true);
@@ -160,8 +161,10 @@ public class RtlFamiliesToPersons extends BXToolForEMF<FamilyRegister, PersonReg
 		do {
 			matches = manager.findMatches();
 			for (Match match : matches) {
-				if (match.run(state, logWriter))
+				if (match.run(state, logWriter)) {
 					hasSuccess = true;
+					break;
+				}
 			}
 		}
 		while (hasSuccess && matches.size() > 0);

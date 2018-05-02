@@ -5,9 +5,3 @@ Writing USE model specification to file: ../implementationArtefacts/RTL/Families
 Load model Families2Persons ...
 Model Families2Persons (15 classes, 20 associations, 16 invariants, 36 operations, 72 pre-/postconditions, 0 state machines)
 Compilation successful
-precondition false in operation call `RuleCollection::Father2MaleNewFamily_forwTrafo(self:rc, matchSR:Tuple{father=FamilyMember6,fm=Family2,fr=famReg}, matchCL:Tuple{fr2pr=fr2pr}, matchTL:Tuple{pr=perReg})'.
-precondition false in operation call `RuleCollection::Father2MaleNewFamily_forwTrafo(self:rc, matchSR:Tuple{father=FamilyMember1,fm=Family1,fr=famReg}, matchCL:Tuple{fr2pr=fr2pr}, matchTL:Tuple{pr=perReg})'.
-precondition false in operation call `RuleCollection::Mother2FemaleNewFamily_forwTrafo(self:rc, matchSR:Tuple{fm=Family1,fr=famReg,mother=FamilyMember2}, matchCL:Tuple{fr2pr=fr2pr}, matchTL:Tuple{pr=perReg})'.
-precondition false in operation call `RuleCollection::Son2MaleNewFamily_forwTrafo(self:rc, matchSR:Tuple{fm=Family1,fr=famReg,son=FamilyMember3}, matchCL:Tuple{fr2pr=fr2pr}, matchTL:Tuple{pr=perReg})'.
-precondition false in operation call `RuleCollection::Daughter2FemaleNewFamily_forwTrafo(self:rc, matchSR:Tuple{daughter=FamilyMember5,fm=Family1,fr=famReg}, matchCL:Tuple{fr2pr=fr2pr}, matchTL:Tuple{pr=perReg})'.
-precondition false in operation call `RuleCollection::Daughter2FemaleNewFamily_forwTrafo(self:rc, matchSR:Tuple{daughter=FamilyMember4,fm=Family1,fr=famReg}, matchCL:Tuple{fr2pr=fr2pr}, matchTL:Tuple{pr=perReg})'.

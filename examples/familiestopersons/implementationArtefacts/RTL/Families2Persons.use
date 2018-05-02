@@ -383,7 +383,8 @@ PersonRegister.allInstances->includesAll(Set {pr})
  and
 (Male.allInstances - Male.allInstances@pre)->exists(mp|
 mp.personRegister->includes(pr) and
-pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+pr.persons->includes(mp) and
+fm.name = mp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
  and
 (F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
 (FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
@@ -476,7 +477,8 @@ PersonRegister.allInstances->includesAll(Set {pr})
  and
 (Male.allInstances - Male.allInstances@pre)->exists(mp|
 mp.personRegister->includes(pr) and
-pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+pr.persons->includes(mp) and
+fm.name = mp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
  and
 (S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
 (FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
@@ -522,7 +524,8 @@ PersonRegister.allInstances->includesAll(Set {pr})
  and
 (Female.allInstances - Female.allInstances@pre)->exists(fp|
 pr.persons->includes(fp) and
-fp.personRegister->includes(pr) and FR2PR.allInstances->includesAll(Set {fr2pr})
+fp.personRegister->includes(pr) and
+fm.name = fp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
  and
 (D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
 (FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
@@ -755,7 +758,8 @@ fm.familyRegister->includes(fr) and
 fm.name <> Undefined and
 fm.father->size() < 1 and
 mp.personRegister->includes(pr) and 
-pr.persons->includes(mp) and
+pr.persons->includes(mp) and 
+fm.name = mp.name.split(', ')->at(1) and
 fr.fr2pr->includes(fr2pr) and 
 fr2pr.fr->includes(fr) and 
 pr.fr2pr->includes(fr2pr) and 
@@ -855,7 +859,8 @@ fr.families->includes(fm) and
 fm.familyRegister->includes(fr) and 
 fm.name <> Undefined and
 mp.personRegister->includes(pr) and 
-pr.persons->includes(mp) and
+pr.persons->includes(mp) and 
+fm.name = mp.name.split(', ')->at(1) and
 fr.fr2pr->includes(fr2pr) and 
 fr2pr.fr->includes(fr) and 
 pr.fr2pr->includes(fr2pr) and 
@@ -904,7 +909,8 @@ fr.families->includes(fm) and
 fm.familyRegister->includes(fr) and 
 fm.name <> Undefined and
 pr.persons->includes(fp) and 
-fp.personRegister->includes(pr) and
+fp.personRegister->includes(pr) and 
+fm.name = fp.name.split(', ')->at(1) and
 fr.fr2pr->includes(fr2pr) and 
 fr2pr.fr->includes(fr) and 
 pr.fr2pr->includes(fr2pr) and 
@@ -1162,7 +1168,8 @@ fm.name <> Undefined and
 father.familyFather->includes(fm) and 
 fm.father->includes(father) and
 mp.personRegister->includes(pr) and 
-pr.persons->includes(mp) and
+pr.persons->includes(mp) and 
+fm.name = mp.name.split(', ')->at(1) and
 fr.fr2pr->includes(fr2pr) and 
 fr2pr.fr->includes(fr) and 
 pr.fr2pr->includes(fr2pr) and 
@@ -1259,7 +1266,8 @@ fm.name <> Undefined and
 fm.sons->includes(son) and 
 son.familySon->includes(fm) and
 mp.personRegister->includes(pr) and 
-pr.persons->includes(mp) and
+pr.persons->includes(mp) and 
+fm.name = mp.name.split(', ')->at(1) and
 fr.fr2pr->includes(fr2pr) and 
 fr2pr.fr->includes(fr) and 
 pr.fr2pr->includes(fr2pr) and 
@@ -1307,7 +1315,8 @@ fm.name <> Undefined and
 fm.daughters->includes(daughter) and 
 daughter.familyDaughter->includes(fm) and
 pr.persons->includes(fp) and 
-fp.personRegister->includes(pr) and
+fp.personRegister->includes(pr) and 
+fm.name = fp.name.split(', ')->at(1) and
 fr.fr2pr->includes(fr2pr) and 
 fr2pr.fr->includes(fr) and 
 pr.fr2pr->includes(fr2pr) and 
@@ -1581,7 +1590,8 @@ fm.father->includes(father) and PersonRegister.allInstances->includesAll(Set {pr
  and
 (Male.allInstances - Male.allInstances@pre)->exists(mp|
 mp.personRegister->includes(pr) and
-pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+pr.persons->includes(mp) and
+fm.name = mp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
  and
 (F2MP.allInstances - F2MP.allInstances@pre)->exists(f2mp|
 (FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
@@ -1677,7 +1687,8 @@ son.familySon->includes(fm) and PersonRegister.allInstances->includesAll(Set {pr
  and
 (Male.allInstances - Male.allInstances@pre)->exists(mp|
 mp.personRegister->includes(pr) and
-pr.persons->includes(mp) and FR2PR.allInstances->includesAll(Set {fr2pr})
+pr.persons->includes(mp) and
+fm.name = mp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
  and
 (S2MP.allInstances - S2MP.allInstances@pre)->exists(s2mp|
 (FM2MP.allInstances - FM2MP.allInstances@pre)->exists(fm2mp|
@@ -1724,7 +1735,8 @@ daughter.familyDaughter->includes(fm) and PersonRegister.allInstances->includesA
  and
 (Female.allInstances - Female.allInstances@pre)->exists(fp|
 pr.persons->includes(fp) and
-fp.personRegister->includes(pr) and FR2PR.allInstances->includesAll(Set {fr2pr})
+fp.personRegister->includes(pr) and
+fm.name = fp.name.split(', ')->at(1) and FR2PR.allInstances->includesAll(Set {fr2pr})
  and
 (D2FP.allInstances - D2FP.allInstances@pre)->exists(d2fp|
 (FM2FP.allInstances - FM2FP.allInstances@pre)->exists(fm2fp|
